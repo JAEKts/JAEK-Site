@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown Editor</title>
+</head>
+<body>
+  <h1>Markdown Editor</h1>
+  <form id="markdownForm">
+    <label for="markdownContent">Enter Markdown:</label><br>
+    <textarea id="markdownContent" name="markdownContent" rows="10" cols="50" oninput="saveMarkdown()"></textarea><br>
+  </form>
+
+  <script>
+    function saveMarkdown() {
+      const markdownContent = document.getElementById('markdownContent').value;
+
+      fetch('/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `markdownContent=${encodeURIComponent(markdownContent)}`,
+      })
+      .then(response => response.text())
+      .then(message => console.log(message))
+      .catch(error => console.error(error));
+    }
+
+    // Load initial content from the server
+    document.addEventListener('DOMContentLoaded', () => {
+      fetch('/load')
+        .then(response => response.text())
+        .then(markdownContent => {
+          document.getElementById('markdownContent').value = markdownContent;
+        })
+        .catch(error => console.error(error));
+    });
+  </script>
+</body>
+</html>
+
